@@ -1,6 +1,9 @@
 ## Alpha v0.2 (Upcoming) - The future-proofing update
 - Added a 'status' system
-- Now opens files for writing (instead of reading)
+- Now opens files for writing (as well as reading)
+- Now writes logs!
+- `goto` now handles lines that don't exsist.
+- `stop`, `close`, and `exit` are now aliases for `quit`
 
 ## Alpha v0.1 - The OG update
  - Command parser
