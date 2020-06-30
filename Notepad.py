@@ -2,15 +2,14 @@
 import time
 
 print("Loading Notepad-- by MMK21...")
+status = "loading"
  
 from os import system, name  
-
-f = open("WorkFile.txt")
 
 run = True
 
 def clear(): 
-    # for windows 
+    # This bit's taken from https://www.geeksforgeeks.org/clear-screen-python/
     if name == 'nt': 
         _ = system('cls') 
     else: 
@@ -40,30 +39,43 @@ def mainLoop():
         param1 = usrCmdAll.split(' ', 1)[1]
     except:
         param1 = ""
+
     if usrCmd == "help":
         clear()
         print("=== HELP MENU ===")
         print("")
-        print("GOTO: View a line of the Work File. Usage: goto <line>")
+        print("GOTO: View a line of the Work File. Fails if no file is open. Usage: goto <line>")
         print("HELP: Display all commands. Usage: help")
         print("QUIT: Exit Notepad--. Usage: quit")
         print("")
         print("< Join r/CactusClub >")
-    elif usrCmd == "quit":
+    elif usrCmd == "quit" or usrCmd == "exit" or usrCmd == "stop" or usrCmd == "close":
         shutdown()
     elif usrCmd == "goto":
-        if param1.isnumeric():
-            param1 = int(param1)
-            print(readLineNo(param1))
+        if status == "fileopen":
+            if param1.isnumeric():
+                param1 = int(param1)
+                output = readLineNo(param1)
+                if output == "":
+                    print("Could not find that line!")
+                else:
+                    print(output)
+            else:
+                print("Invalid parameter!")
         else:
-            print("Invalid parameter!")
+            print("You cannot use this command at the moment.")
     else:
         print("Unknown or incomplete command, see below for error")
         print(usrCmd+"<--[HERE]")
+    
     input("Press enter to continue...")
 
 time.sleep(1)
+status = "homescreen"
 print("Done!")
+
+f = open("WorkFile.txt","r+")
+status = "fileopen"
 
 while run:
     # Reset variables:
