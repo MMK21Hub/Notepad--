@@ -7,4 +7,4 @@ https://github.com/MMK21Hub/Notepad--/releases/tag/v0.2
  - 3 new commands: `goto`, `help`, and `quit`
  - Smart 'off switch'
  - Some core parts of the editor are now in place
- - Lots more smaller items, to many to list here
+ - Lots more smaller items, too many to list here
