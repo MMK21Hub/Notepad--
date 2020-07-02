@@ -5,6 +5,7 @@ Unrelesed
 
 ## Alpha v0.2 - The future-proofing update
 Released 2/7/2020
+
 https://github.com/MMK21Hub/Notepad--/releases/tag/v0.2
 
 ## Alpha v0.1 - The OG update
