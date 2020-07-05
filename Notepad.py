@@ -38,7 +38,6 @@ print("Loading Notepad-- by MMK21...")
 status = "loading"  
 
 def log(msgtype,msg,thread = "Main"):
-    lololol= 21
     if msgtype == debug:
     #if False:
         if debugMode:
