@@ -10,6 +10,7 @@ global currentLine
 currentLine = ""
 global loopedno
 loopedno = 0
+
 run = True
 Debug = True
 crashMsg = ""
@@ -32,13 +33,20 @@ menu  = "Menu"
 svr   = "Server"
 server= "Server"
 
-logf.write("==== NOTEPAD-- BY MMK21 ====")
+logf.write("==== NOTEPAD-- v0.2.2 BY MMK21 ====")
 print("Loading Notepad-- by MMK21...")
 status = "loading"  
 
 def log(msgtype,msg,thread = "Main"):
-    currenttime = datetime.datetime.now().strftime("%H:%M:%S")
-    logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
+    if msgtype == debug:
+        if Debug:
+            currenttime = datetime.datetime.now().strftime("%H:%M:%S")
+            logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
+        else:
+            pass
+    else:
+        currenttime = datetime.datetime.now().strftime("%H:%M:%S")
+        logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
 
 def clear(watermark = True): 
     # This bit's adapted from https://www.geeksforgeeks.org/clear-screen-python/
