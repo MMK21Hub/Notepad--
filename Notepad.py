@@ -11,6 +11,10 @@ currentLine = ""
 global loopedno
 loopedno = 0
 run = True
+Debug = True
+crashMsg = ""
+f = ""
+
 info  = "INFO"
 note  = "INFO"
 debug = "INFO"
@@ -55,8 +59,9 @@ def shutdown(exitcode = -1):
     print("Saving world...")
     log(info, "Saving file...",svr)
     log(info, "Saving chunks",svr)
-    f.close()
+    if f != "": f.close()
     global workfile
+    workfile = workfile
     log(info, "ThreadedAnvilChunkStorage ("+workfile+"): All chunks are saved",svr)
     workfile = ""
     exitcode = str(exitcode)
@@ -69,6 +74,7 @@ def shutdown(exitcode = -1):
     #  -1: Unknown
     #   0: Window closed
     #   1: User entered 'quit'
+    #  99: Crash
 
 def readLineNo(lineNo):
     currentLineNo = 0
@@ -115,6 +121,7 @@ def mainLoop():
         print("")
         print("< Join r/CactusClub >")
     elif usrCmd == "quit" or usrCmd == "exit" or usrCmd == "stop" or usrCmd == "close":
+        run = False
         shutdown(1)
     elif usrCmd == "goto":
         if status == "fileopen":
@@ -146,16 +153,28 @@ time.sleep(1)
 status = "homescreen"
 print("Done!")
 
-global workfile
-workfile = "WorkFile.txt"
-f = open("WorkFile.txt","r+")
-log(info,"Opened "+workfile,menu)
-status = "fileopen"
+try:
 
-while run:
-    # Reset variables:
-    global currentLineNo
-    currentLineNo = 0
-    f.seek(0)
+    global workfile
+    workfile = "WorkFile.txt"
+    f = open("WorkFile.txt","r+")
+    log(info,"Opened "+workfile,menu)
+    status = "fileopen"
 
-    mainLoop()
+    while run:
+        # Reset variables:
+        global currentLineNo
+        currentLineNo = 0
+        f.seek(0)
+
+        mainLoop()
+except Exception as crashMsg:
+    crashMsg = str(crashMsg)
+    if run:
+        log(crash,"An exception has occoured and the process has crashed.",top)
+        log(crash,crashMsg,top)
+        print("Notepad-- has crashed! Press enter to close the window.")
+        print("The crash message is:")
+        print("\t",crashMsg)
+        input()
+        shutdown(99)
