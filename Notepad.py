@@ -12,13 +12,13 @@ global loopedno
 loopedno = 0
 
 run = True
-Debug = True
+debugMode = False
 crashMsg = ""
 f = ""
 
 info  = "INFO"
 note  = "INFO"
-debug = "INFO"
+debug = "DEBUG"
 warn  = "WARN"
 err   = "ERROR"
 error = "ERROR"
@@ -38,8 +38,10 @@ print("Loading Notepad-- by MMK21...")
 status = "loading"  
 
 def log(msgtype,msg,thread = "Main"):
+    lololol= 21
     if msgtype == debug:
-        if Debug:
+    #if False:
+        if debugMode:
             currenttime = datetime.datetime.now().strftime("%H:%M:%S")
             logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
         else:
@@ -48,6 +50,7 @@ def log(msgtype,msg,thread = "Main"):
         currenttime = datetime.datetime.now().strftime("%H:%M:%S")
         logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
 
+log(debug,"Loading function 'clear()'.",load)
 def clear(watermark = True): 
     # This bit's adapted from https://www.geeksforgeeks.org/clear-screen-python/
     if os.name == 'nt': 
@@ -57,6 +60,7 @@ def clear(watermark = True):
     if watermark:
         print(">>>>>> Notepad--")
 
+log(debug,"Loading function 'shutdown()'.",load)
 def shutdown(exitcode = -1):
     clear()
     print(">>>>")
@@ -85,12 +89,16 @@ def shutdown(exitcode = -1):
     #  99: Crash
 
 def readLineNo(lineNo):
+    log(debug,"Loading function 'readLineNo()'.",load)
     currentLineNo = 0
     while currentLineNo < lineNo:
         currentLine = f.readline()
         currentLineNo = currentLineNo + 1
     return currentLine
 
+log(debug,"Loading function 'mainLoop()'.",load)
+# log( debug , "Loading function 'mainLoop()' - " +     "loading topbar."     , load )
+# log( debug , "Loading function 'mainLoop()' - " + "loading command parser." , load )
 def mainLoop():
 
     clear()
@@ -99,6 +107,7 @@ def mainLoop():
     loopedno = str(loopedno)
     log(note, "Starting Main Loop #" + loopedno)
     loopedno = int(loopedno)
+    refresh = False
 
     print(">>>> Work File: "+workfile+"")
     global currentLine
@@ -147,13 +156,20 @@ def mainLoop():
                 print("Invalid parameter(s)!")
         else:
             print("You cannot use this command at the moment.")
+    elif usrCmdAll == "":
+        refresh = True
     else:
         log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Unknown command.")
         print("Unknown or incomplete command, see below for error")
         print(usrCmd+"<--[HERE]")
     
-    input("Press enter to continue...")
+    if refresh:
+        log(debug,"Refreshing Command Bar.")
+        refresh = False
+    else:
+        input("Press enter to continue...")
 
+log(debug, "Debug mode is enabled.",kernel)
 log(info,"Loaded all functions",load)
 log(info, "Setting user: Default",load)
 log(info, "Join r/CactusClub",root)
@@ -181,6 +197,7 @@ except Exception as crashMsg:
     if run:
         log(crash,"An exception has occoured and the process has crashed.",top)
         log(crash,crashMsg,top)
+        print()
         print("Notepad-- has crashed! Press enter to close the window.")
         print("The crash message is:")
         print("\t",crashMsg)
