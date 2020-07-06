@@ -6,6 +6,8 @@ import os
 
 currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 logf = open(currenttimefull+".txt","a+")
+global workfile
+workfile = ""
 global currentLine
 currentLine = ""
 global loopedno
@@ -35,6 +37,7 @@ server= "Server"
 
 logf.write("==== NOTEPAD-- v0.2.2 BY MMK21 ====")
 print("Loading Notepad-- by MMK21...")
+global status
 status = "loading"  
 
 def log(msgtype,msg,thread = "Main"):
@@ -48,6 +51,9 @@ def log(msgtype,msg,thread = "Main"):
     else:
         currenttime = datetime.datetime.now().strftime("%H:%M:%S")
         logf.write("\n"+"["+currenttime+"] ["+thread+"/"+msgtype+"]: "+msg)
+
+class DebugCrash(Exception):
+    pass
 
 log(debug,"Loading function 'clear()'.",load)
 def clear(watermark = True): 
@@ -100,6 +106,17 @@ log(debug,"Loading function 'mainLoop()'.",load)
 # log( debug , "Loading function 'mainLoop()' - " + "loading command parser." , load )
 def mainLoop():
 
+    global status
+    if status != "fileopen":
+        global workfile
+        workfile = "WorkFile.txt"
+        global f
+        f = open("WorkFile.txt","r+")
+        log(info,"Opened "+workfile,menu)
+        status = "fileopen"
+    else:
+        f.seek(0)
+
     clear()
     global loopedno
     loopedno = loopedno + 1
@@ -131,9 +148,10 @@ def mainLoop():
         print(">> Commands: help, goto <line>, quit")
         print("=== HELP MENU ===")
         print("")
-        print("GOTO: View a line of the Work File. Fails if no file is open. Usage: goto <line>")
-        print("HELP: Display all commands. Usage: help")
-        print("QUIT: Exit Notepad--. Usage: quit")
+        print("CRASH: Crashes Notepad--; used for debugging. Usage: crash")
+        print("GOTO:  View a line of the Work File. Fails if no file is open. Usage: goto <line>")
+        print("HELP:  Display all commands. Usage: help")
+        print("QUIT:  Exit Notepad--. Usage: quit")
         print("")
         print("< Join r/CactusClub >")
     elif usrCmd == "quit" or usrCmd == "exit" or usrCmd == "stop" or usrCmd == "close":
@@ -157,6 +175,9 @@ def mainLoop():
             print("You cannot use this command at the moment.")
     elif usrCmdAll == "":
         refresh = True
+    elif usrCmd == "crash":
+        log(debug,"Hold down F3 + C like it's 1999")
+        raise DebugCrash("Manually triggered debug crash")
     else:
         log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Unknown command.")
         print("Unknown or incomplete command, see below for error")
@@ -177,18 +198,10 @@ status = "homescreen"
 print("Done!")
 
 try:
-
-    global workfile
-    workfile = "WorkFile.txt"
-    f = open("WorkFile.txt","r+")
-    log(info,"Opened "+workfile,menu)
-    status = "fileopen"
-
     while run:
         # Reset variables:
         global currentLineNo
         currentLineNo = 0
-        f.seek(0)
 
         mainLoop()
 except Exception as crashMsg:
@@ -196,8 +209,11 @@ except Exception as crashMsg:
     if run:
         log(crash,"An exception has occoured and the process has crashed.",top)
         log(crash,crashMsg,top)
-        print()
-        print("Notepad-- has crashed! Press enter to close the window.")
+        clear()
+        print(">>>>")
+        print(">>>")
+        print(">>")
+        print("Notepad-- has crashed! Please press enter to close the window.")
         print("The crash message is:")
         print("\t",crashMsg)
         input()
