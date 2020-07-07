@@ -1,8 +1,15 @@
+if True:
+    # version.json
+    ver = "0.2.5"
+    isStable = False
+    isDev = False
+    phase = "Alpha"
 
 import time
 import datetime
 #from os import system, name, path
 import os
+
 
 currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 logf = open(currenttimefull+".txt","a+")
@@ -35,7 +42,7 @@ menu  = "Menu"
 svr   = "Server"
 server= "Server"
 
-logf.write("==== NOTEPAD-- v0.2.2 BY MMK21 ====")
+logf.write("==== NOTEPAD-- v"+ver+" BY MMK21 ====")
 print("Loading Notepad-- by MMK21...")
 global status
 status = "loading"  
@@ -63,7 +70,7 @@ def clear(watermark = True):
     else: 
         _ = os.system('clear') 
     if watermark:
-        print(">>>>>> Notepad--")
+        print(">>>>>> Notepad-- v"+ver)
 
 log(debug,"Loading function 'shutdown()'.",load)
 def shutdown(exitcode = -1):
@@ -96,6 +103,7 @@ def shutdown(exitcode = -1):
 def readLineNo(lineNo):
     log(debug,"Loading function 'readLineNo()'.",load)
     currentLineNo = 0
+    global currentLine
     while currentLineNo < lineNo:
         currentLine = f.readline()
         currentLineNo = currentLineNo + 1
@@ -107,15 +115,17 @@ log(debug,"Loading function 'mainLoop()'.",load)
 def mainLoop():
 
     global status
-    if status != "fileopen":
+    if status != "fileopen" and os.path.isfile("WorkFile.txt"):
         global workfile
         workfile = "WorkFile.txt"
         global f
         f = open("WorkFile.txt","r+")
         log(info,"Opened "+workfile,menu)
         status = "fileopen"
-    else:
+    elif os.path.isfile("WorkFile.txt"):
         f.seek(0)
+    else:
+        log(err,"Could not find a Work File!")
 
     clear()
     global loopedno
@@ -125,13 +135,23 @@ def mainLoop():
     loopedno = int(loopedno)
     refresh = False
 
-    print(">>>> Work File: "+workfile+"")
+    if status == "fileopen":
+        print(">>>> Work File: "+workfile)
+    else:
+        print(">>>>            "         )
     global currentLine
+    readLineNo(currentLineNo)
     if currentLine != "":
         print(">>> "+currentLine)
     else:
         print(">>> "            )
-    print(">> Commands: help, goto <line>, quit")
+    ## Topbar/CmdTips
+    print(">> Commands:",end=" ")
+    print("help",end=" ")
+    if status == "fileopen": print("goto",end=" ")
+    print("quit")
+    #print(">> Commands: help, goto <line>, quit")
+
     usrCmdAll = input("> ")
     usrCmd = usrCmdAll.split(' ', 1)[0]
     try:
@@ -143,9 +163,10 @@ def mainLoop():
     if usrCmd == "help":
         clear()
         log(note,"Rendering help menu")
-        print(">>>>")
-        print(">>>")
-        print(">> Commands: help, goto <line>, quit")
+        print(">>>> ")
+        print(">>>  ")
+        print(">>   ")
+
         print("=== HELP MENU ===")
         print("")
         print("CRASH: Crashes Notepad--; used for debugging. Usage: crash")
@@ -166,8 +187,8 @@ def mainLoop():
                     print("Could not find that line!")
                     log(err,"Command failed! IllegalArgumentError on line 1: "+usrCmd+"<--[HERE] Value specified is larger than maximum possiable value.")
                 else:
-                    print(output)
                     currentLine = output.rstrip()
+                    print(">>> "+currentLine)
             else:
                 log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Invalid parameter(s).")
                 print("Invalid parameter(s)!")
