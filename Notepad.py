@@ -9,6 +9,9 @@ import time
 import datetime
 #from os import system, name, path
 import os
+import sys
+import shutil
+import atexit
 
 
 currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -20,6 +23,7 @@ currentLine = ""
 global loopedno
 loopedno = 0
 
+columns, rows = shutil.get_terminal_size(fallback=(80, 24)) #https://bit.ly/31SGiOo
 run = True
 debugMode = False
 crashMsg = ""
