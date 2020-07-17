@@ -49,7 +49,7 @@ server= "Server"
 logf.write("==== NOTEPAD-- v"+ver+" BY MMK21 ====")
 print("Loading Notepad-- by MMK21...")
 global status
-status = "loading"  
+status = "loading"
 
 def log(msgtype,msg,thread = "Main"):
     if msgtype == debug:
@@ -173,10 +173,12 @@ def mainLoop():
 
         print("=== HELP MENU ===")
         print("")
-        print("CRASH: Crashes Notepad--; used for debugging. Usage: crash")
-        print("GOTO:  View a line of the Work File. Fails if no file is open. Usage: goto <line>")
-        print("HELP:  Display all commands. Usage: help")
-        print("QUIT:  Exit Notepad--. Usage: quit")
+        print("CRASH:   Crashes Notepad--; used for debugging. Usage: crash")
+        print("GOTO:    View a line of the Work File. Fails if no file is open. Usage: goto <line>")
+        print("HELP:    Display all commands. Usage: help")
+        print("QUIT:    Exit Notepad--. Usage: quit")
+        print("UP/DOWN: Navigate through the lines in your workfile. Usage: up [count]")
+        print("                                                             down [count]")
         print("")
         print("< Join r/CactusClub >")
     elif usrCmd == "quit" or usrCmd == "exit" or usrCmd == "stop" or usrCmd == "close":
@@ -216,6 +218,7 @@ def mainLoop():
 
 log(debug, "Debug mode is enabled.",kernel)
 log(info,"Loaded all functions",load)
+atexit.register(shutdown, 0)
 log(info, "Setting user: Default",load)
 log(info, "Join r/CactusClub",root)
 time.sleep(1)
