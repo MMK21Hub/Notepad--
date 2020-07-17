@@ -49,7 +49,7 @@ server= "Server"
 logf.write("==== NOTEPAD-- v"+ver+" BY MMK21 ====")
 print("Loading Notepad-- by MMK21...")
 global status
-status = "loading"
+status = ["loading"]
 
 def log(msgtype,msg,thread = "Main"):
     if msgtype == debug:
@@ -125,7 +125,7 @@ def mainLoop():
         global f
         f = open("WorkFile.txt","r+")
         log(info,"Opened "+workfile,menu)
-        status = "fileopen"
+        status = ["fileopen"]
     elif os.path.isfile("WorkFile.txt"):
         f.seek(0)
     else:
@@ -146,6 +146,7 @@ def mainLoop():
     global currentLine
     readLineNo(currentLineNo)
     if currentLine != "":
+        status.append("lineopen")
         print(">>> "+currentLine)
     else:
         print(">>> "            )
@@ -222,7 +223,7 @@ atexit.register(shutdown, 0)
 log(info, "Setting user: Default",load)
 log(info, "Join r/CactusClub",root)
 time.sleep(1)
-status = "homescreen"
+status = ["homescreen"]
 print("Done!")
 
 try:
