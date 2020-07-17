@@ -12,10 +12,17 @@ import os
 import sys
 import shutil
 import atexit
+from pathlib import Path
 
 
 currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-logf = open(currenttimefull+".txt","a+")
+def createFolder(directory): #https://bit.ly/2B7rW1s
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+createFolder("./logs/")
+logfpath = Path("D:/My Stuff/Code/Usefulness/Notepad--/logs")
+logfname = logfpath / "raw_data.txt"
+logf = open(logfname,"a+")
 global workfile
 workfile = ""
 global currentLine
