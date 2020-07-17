@@ -139,7 +139,7 @@ def mainLoop():
     loopedno = int(loopedno)
     refresh = False
 
-    if status == "fileopen":
+    if "fileopen" in status:
         print(">>>> Work File: "+workfile)
     else:
         print(">>>>            "         )
@@ -153,7 +153,7 @@ def mainLoop():
     ## Topbar/CmdTips
     print(">> Commands:",end=" ")
     print("help",end=" ")
-    if status == "fileopen": print("goto",end=" ")
+    if "fileopen" in status: print("goto",end=" ")
     print("quit")
     #print(">> Commands: help, goto <line>, quit")
 
@@ -186,7 +186,7 @@ def mainLoop():
         run = False
         shutdown(1)
     elif usrCmd == "goto":
-        if status == "fileopen":
+        if "fileopen" in status:
             if param1.isnumeric():
                 param1 = int(param1)
                 output = readLineNo(param1)
