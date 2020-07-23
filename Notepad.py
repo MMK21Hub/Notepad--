@@ -21,7 +21,8 @@ def createFolder(directory): #https://bit.ly/2B7rW1s
         os.makedirs(directory)
 createFolder("./logs/")
 logfpath = Path("D:/My Stuff/Code/Usefulness/Notepad--/logs")
-logfname = logfpath / "raw_data.txt"
+logfnamebefore = Path(currenttimefull+".txt")
+logfname = logfpath / logfnamebefore
 logf = open(logfname,"a+")
 global workfile
 workfile = ""
