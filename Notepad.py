@@ -15,12 +15,12 @@ import atexit
 from pathlib import Path
 
 
-currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
 def createFolder(directory): #https://bit.ly/2B7rW1s
     if not os.path.exists(directory):
         os.makedirs(directory)
 createFolder("./logs/")
-logfpath = Path("D:/My Stuff/Code/Usefulness/Notepad--/logs")
+logfpath = Path("./logs/")
 logfnamebefore = Path(currenttimefull+".txt")
 logfname = logfpath / logfnamebefore
 logf = open(logfname,"a+")
