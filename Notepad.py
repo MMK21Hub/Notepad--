@@ -30,6 +30,8 @@ global currentLine
 currentLine = ""
 global loopedno
 loopedno = 0
+global currentLineNo
+currentLineNo = 0
 
 columns, rows = shutil.get_terminal_size(fallback=(80, 24)) #https://bit.ly/31SGiOo
 run = True
@@ -113,7 +115,6 @@ def shutdown(exitcode = -1):
     #  99: Crash
 
 def readLineNo(lineNo):
-    log(debug,"Loading function 'readLineNo()'.",load)
     currentLineNo = 0
     global currentLine
     while currentLineNo < lineNo:
@@ -126,6 +127,7 @@ log(debug,"Loading function 'mainLoop()'.",load)
 # log( debug , "Loading function 'mainLoop()' - " + "loading command parser." , load )
 def mainLoop():
 
+    global currentLineNo
     global status
     if status != "fileopen" and os.path.isfile("WorkFile.txt"):
         global workfile
@@ -155,14 +157,16 @@ def mainLoop():
     readLineNo(currentLineNo)
     if currentLine != "":
         status.append("lineopen")
-        print(">>> "+currentLine)
+        print(">>> "+currentLine.rstrip("\n"))
     else:
         print(">>> "            )
     ## Topbar/CmdTips
     print(">> Commands:",end=" ")
     print("help",end=" ")
     if "fileopen" in status: print("goto",end=" ")
-    print("quit")
+    print("quit",end=" ")
+    if "lineopen" in status: print("up",end=" ")
+    print()
     #print(">> Commands: help, goto <line>, quit")
 
     usrCmdAll = input("> ")
@@ -214,6 +218,19 @@ def mainLoop():
     elif usrCmd == "crash":
         log(debug,"Hold down F3 + C like it's 1999")
         raise DebugCrash("Manually triggered debug crash")
+    elif usrCmd == "up":
+        if "lineopen" in status:
+            if param1 == "":
+                param1 == currentLineNo
+            if param1.isnumeric():
+                param1 = int(param1)
+                readLineNo(param1)
+                currentLineNo = currentLineNo - param1
+            else:
+                log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Invalid parameter(s).")
+                print("Invalid parameter(s)!")
+        else:
+            print("You cannot use this command at the moment.")
     else:
         log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Unknown command.")
         print("Unknown or incomplete command, see below for error")
@@ -237,7 +254,6 @@ print("Done!")
 try:
     while run:
         # Reset variables:
-        global currentLineNo
         currentLineNo = 0
 
         mainLoop()
