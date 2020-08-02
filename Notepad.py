@@ -13,6 +13,7 @@ import sys
 import shutil
 import atexit
 from pathlib import Path
+import linecache
 
 
 currenttimefull = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
@@ -38,6 +39,7 @@ run = True
 debugMode = False
 crashMsg = ""
 f = ""
+handleCrashes = True
 
 info  = "INFO"
 note  = "INFO"
@@ -113,6 +115,16 @@ def shutdown(exitcode = -1):
     #   0: Window closed
     #   1: User entered 'quit'
     #  99: Crash
+
+def PrintException():
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
+    filename = f.f_code.co_filename
+    linecache.checkcache(filename)
+    line = linecache.getline(filename, lineno, f.f_globals)
+    global crashReport
+    crashReport = 'EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj)
 
 def readLineNo(lineNo):
     currentLineNo = 0
@@ -222,10 +234,14 @@ def mainLoop():
         if "lineopen" in status:
             if param1 == "":
                 param1 == currentLineNo
-            if param1.isnumeric():
+                altparam = 0
+            else:
+                altparam = param1
+            if param1.isnumeric() or altparam == 0:
                 param1 = int(param1)
-                readLineNo(param1)
-                currentLineNo = currentLineNo - param1
+                altparam = int(param1)
+                readLineNo(currentLineNo)
+                currentLineNo = currentLineNo - altparam
             else:
                 log(err, "Could not parse command. Error on line 1: "+usrCmd+"<--[HERE] Invalid parameter(s).")
                 print("Invalid parameter(s)!")
@@ -260,8 +276,11 @@ try:
 except Exception as crashMsg:
     crashMsg = str(crashMsg)
     if run:
-        log(crash,"An exception has occoured and the process has crashed.",top)
-        log(crash,crashMsg,top)
+        PrintException()
+        log(crash,"An exception has occoured and the process has crashed:"+crashMsg,top)
+        log(crash,"FULL CRASH REPORT:",top)
+        log(crash,"\t"+crashReport,top)
+
         clear()
         print(">>>>")
         print(">>>")
@@ -269,5 +288,8 @@ except Exception as crashMsg:
         print("Notepad-- has crashed! Please press enter to close the window.")
         print("The crash message is:")
         print("\t",crashMsg)
-        input()
+        finalInput = input()
+        if not finalInput == "":
+            print("\t\t"+crashReport)
+            input()
         shutdown(99)
